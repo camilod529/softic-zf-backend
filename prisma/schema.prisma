@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,146 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model tab_colaborador {
+  documento_colaborador                                                   BigInt                      @id
+  empresa_colaborador                                                     BigInt
+  nombre_1                                                                String                      @db.VarChar
+  nombre_2                                                                String                      @db.VarChar
+  apellido_1                                                              String                      @db.VarChar
+  apellido_2                                                              String                      @db.VarChar
+  genero                                                                  String                      @db.VarChar
+  correo_empresarial                                                      String?                     @db.VarChar
+  correo_personal                                                         String                      @db.VarChar
+  fecha_nacimiento                                                        DateTime                    @db.Date
+  foto                                                                    String                      @db.VarChar
+  estado_colaborador                                                      Boolean                     @default(true)
+  puntos_acumulados                                                       BigInt                      @default(0)
+  tab_empresa                                                             tab_empresa                 @relation(fields: [empresa_colaborador], references: [nit], onDelete: NoAction, onUpdate: NoAction)
+  tab_comentario                                                          tab_comentario[]
+  tab_etiquetasxcolaborador                                               tab_etiquetasxcolaborador[]
+  tab_premio_reclamado                                                    tab_premio_reclamado[]
+  tab_puntosxcolaborador                                                  tab_puntosxcolaborador[]
+  tab_registroxevento_tab_registroxevento_id_colaboradorTotab_colaborador tab_registroxevento[]       @relation("tab_registroxevento_id_colaboradorTotab_colaborador")
+  tab_registroxevento_tab_registroxevento_referido_porTotab_colaborador   tab_registroxevento[]       @relation("tab_registroxevento_referido_porTotab_colaborador")
+}
+
+model tab_comentario {
+  id_evento       BigInt
+  id_comentarista BigInt
+  id_comentario   BigInt
+  comentario      String          @db.VarChar
+  tab_colaborador tab_colaborador @relation(fields: [id_comentarista], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+  tab_evento      tab_evento      @relation(fields: [id_evento], references: [id_evento], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_evento, id_comentarista])
+}
+
+model tab_empresa {
+  nit                BigInt               @id
+  nombre_empresa     String               @db.VarChar
+  estado_empresa     Boolean              @default(true)
+  puntos             BigInt               @default(0)
+  tab_colaborador    tab_colaborador[]
+  tab_puntosxempresa tab_puntosxempresa[]
+}
+
+model tab_etiqueta {
+  id_etiqueta               Int                         @id
+  nombre_etiqueta           String                      @db.VarChar
+  descripcion_etiqueta      String                      @db.VarChar
+  estado_etiqueta           Boolean                     @default(true)
+  tab_etiquetasxcolaborador tab_etiquetasxcolaborador[]
+}
+
+model tab_etiquetasxcolaborador {
+  id_colaborador  BigInt
+  id_etiqueta     Int
+  tab_colaborador tab_colaborador @relation(fields: [id_colaborador], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+  tab_etiqueta    tab_etiqueta    @relation(fields: [id_etiqueta], references: [id_etiqueta], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_colaborador, id_etiqueta])
+}
+
+model tab_evento {
+  id_evento           BigInt                @id
+  nombre_evento       String                @db.VarChar
+  descripcion_evento  String                @db.VarChar
+  foto_evento         String                @db.VarChar
+  fecha_evento        DateTime              @db.Timestamp(6)
+  aforo_maximo        Int
+  aforo_registrado    Int
+  puntos_colaborador  Int
+  puntos_empresa      Int
+  puntos_castigo      Int
+  estado_boolean      Boolean               @default(true)
+  tab_comentario      tab_comentario[]
+  tab_registroxevento tab_registroxevento[]
+}
+
+model tab_premio {
+  id_premio            BigInt                 @id
+  nombre_premio        String                 @db.VarChar
+  detalles_premio      String                 @db.VarChar
+  coste_premio         Int
+  estado_premio        Boolean
+  tab_premio_reclamado tab_premio_reclamado[]
+}
+
+model tab_premio_reclamado {
+  id_reclamo                 BigInt                @id
+  id_premio                  BigInt
+  id_reclamante              BigInt
+  estado_reclamo             Boolean               @default(false)
+  tab_premio                 tab_premio            @relation(fields: [id_premio], references: [id_premio], onDelete: NoAction, onUpdate: NoAction)
+  tab_colaborador            tab_colaborador       @relation(fields: [id_reclamante], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+  tab_premio_reclamado       tab_premio_reclamado  @relation("tab_premio_reclamadoTotab_premio_reclamado", fields: [id_reclamo], references: [id_reclamo], onDelete: NoAction, onUpdate: NoAction)
+  other_tab_premio_reclamado tab_premio_reclamado? @relation("tab_premio_reclamadoTotab_premio_reclamado")
+}
+
+model tab_puntosxcolaborador {
+  id_puntos        BigInt          @id
+  id_asociado      BigInt
+  motivo_puntos    String          @db.VarChar
+  cantidad_puntos  Int
+  fecha_movimiento DateTime        @default(now()) @db.Timestamp(6)
+  tab_colaborador  tab_colaborador @relation(fields: [id_asociado], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tab_puntosxempresa {
+  id_puntos_empresa BigInt      @id
+  id_empresa        BigInt
+  motivo_puntos     String      @db.VarChar
+  cantidad_puntos   Int
+  fecha_movimiento  DateTime    @default(now()) @db.Timestamp(6)
+  tab_empresa       tab_empresa @relation(fields: [id_empresa], references: [nit], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tab_registroxevento {
+  id_evento                                                           BigInt
+  id_colaborador                                                      BigInt
+  referido_por                                                        BigInt?
+  asistencia                                                          Boolean          @default(false)
+  tab_colaborador_tab_registroxevento_id_colaboradorTotab_colaborador tab_colaborador  @relation("tab_registroxevento_id_colaboradorTotab_colaborador", fields: [id_colaborador], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+  tab_evento                                                          tab_evento       @relation(fields: [id_evento], references: [id_evento], onDelete: NoAction, onUpdate: NoAction)
+  tab_colaborador_tab_registroxevento_referido_porTotab_colaborador   tab_colaborador? @relation("tab_registroxevento_referido_porTotab_colaborador", fields: [referido_por], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_evento, id_colaborador])
+}
+
+model tab_rol {
+  id_rol          Int           @id
+  nombre_rol      String        @db.VarChar
+  descripcion_rol String        @db.VarChar
+  tab_usuario     tab_usuario[]
+}
+
+model tab_usuario {
+  nick       String  @id @db.VarChar
+  contrasena String  @db.VarChar
+  rol        Int
+  estado     Boolean @default(true)
+  tab_rol    tab_rol @relation(fields: [rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction)
 }
