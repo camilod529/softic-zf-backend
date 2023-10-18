@@ -15,12 +15,10 @@ const checkCompany = async (nick, res) => {
       .status(404)
       .json({ message: "There's no company with that credentials" });
 
-  res
-    .status(200)
-    .json({
-      token: generateToken({ ...company, rol: 2 }),
-      data: { ...company, rol: 2 },
-    });
+  res.status(200).json({
+    token: generateToken({ ...company, rol: 2 }),
+    data: { ...company, rol: 2 },
+  });
 };
 
 const checkColaborator = async (nick, res) => {
@@ -34,6 +32,12 @@ const checkColaborator = async (nick, res) => {
     return res
       .status(404)
       .json({ message: "There's no colaborator with that credentials" });
+
+  colaborator.empresa_colaborador = await prisma.tab_empresa.findUnique({
+    where: {
+      nit: colaborator.nit_empresa,
+    },
+  });
 
   res.status(200).json({
     token: generateToken({ ...colaborator, rol: 3 }),
