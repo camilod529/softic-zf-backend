@@ -11,9 +11,16 @@ const checkCompany = async (nick, res) => {
   });
 
   if (!company)
-    return res.status(404).json({ message: "There's no company with that credentials" });
+    return res
+      .status(404)
+      .json({ message: "There's no company with that credentials" });
 
-  res.status(200).json({ token: generateToken({ ...company, rol: 2 }), data: company });
+  res
+    .status(200)
+    .json({
+      token: generateToken({ ...company, rol: 2 }),
+      data: { ...company, rol: 2 },
+    });
 };
 
 const checkColaborator = async (nick, res) => {
@@ -24,11 +31,13 @@ const checkColaborator = async (nick, res) => {
   });
 
   if (!colaborator)
-    return res.status(404).json({ message: "There's no colaborator with that credentials" });
+    return res
+      .status(404)
+      .json({ message: "There's no colaborator with that credentials" });
 
   res.status(200).json({
     token: generateToken({ ...colaborator, rol: 3 }),
-    data: colaborator,
+    data: { ...colaborator, rol: 3 },
   });
 };
 
@@ -37,7 +46,8 @@ export const login = async (req, res) => {
   let contrasena = req.body.contrasena;
   console.log(nick);
 
-  if (!nick || !contrasena) return res.status(403).json({ message: "Fields are missing" });
+  if (!nick || !contrasena)
+    return res.status(403).json({ message: "Fields are missing" });
 
   try {
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");

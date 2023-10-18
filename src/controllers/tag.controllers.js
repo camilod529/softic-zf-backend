@@ -50,14 +50,3 @@ export const updateTag = async (req, res) => {
     .then(() => res.status(200).json({ message: "Tag updated" }))
     .catch((err) => console.log(err) && res.status(400).json({ message: err }));
 };
-
-export const deleteTag = async (req, res) => {
-  await prisma.tab_etiqueta
-    .delete({
-      where: {
-        id_etiqueta: parseInt(req.params.id_etiqueta),
-      },
-    })
-    .then(() => res.status(200).json({ message: "Tag deleted" }))
-    .catch((err) => res.status(400).json({ message: err }));
-};
