@@ -62,20 +62,3 @@ export const updateColaborator = async (req, res) => {
     return res.status(400).json({ message: err });
   }
 };
-
-export const deleteColaborator = async (req, res) => {
-  try {
-    const documento_colaborador = req.params.documento_colaborador;
-
-    await prisma.tab_colaborador
-      .delete({
-        where: {
-          documento_colaborador,
-        },
-      })
-      .then(() => res.status(200).json({ message: "Colaborator deleted" }))
-      .catch((err) => res.status(400).json({ message: err }));
-  } catch (err) {
-    return res.status(400).json({ message: err });
-  }
-};

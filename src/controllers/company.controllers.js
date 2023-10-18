@@ -66,14 +66,3 @@ export const updateCompany = async (req, res) => {
     .then(() => res.status(200).json({ message: "Company updated" }))
     .catch((err) => res.status(400).json({ message: err }));
 };
-
-export const deleteCompany = async (req, res) => {
-  await prisma.tab_empresa
-    .delete({
-      where: {
-        nit: req.params.nit,
-      },
-    })
-    .then(() => res.status(200).json({ message: "Company deleted" }))
-    .catch((err) => res.status(400).json({ message: err }));
-};
