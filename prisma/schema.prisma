@@ -93,6 +93,7 @@ model tab_evento {
   descripcion_evento  String                @db.VarChar
   foto_evento         String                @db.VarChar
   fecha_evento        DateTime              @db.Timestamp(6)
+  fecha_evento_fin    DateTime              @db.Timestamp(6)
   aforo_maximo        Int
   aforo_registrado    Int
   puntos_colaborador  Int
@@ -194,6 +195,7 @@ model tab_usuario {
   contrasena  String    @db.VarChar
   rol         Int
   estado      Boolean   @default(true)
+  pirmeravez  Boolean   @default(true)
   user_insert String?   @db.VarChar
   user_update String?   @db.VarChar
   date_insert DateTime? @db.Timestamp(6)

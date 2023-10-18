@@ -10,6 +10,7 @@ import {
   eventRoutes,
   commentRoutes,
   registerToEventRoutes,
+  awardRoutes,
 } from "./routes/index.js";
 
 const app = express();
@@ -32,7 +33,8 @@ app.use(
   tagRoutes,
   eventRoutes,
   commentRoutes,
-  registerToEventRoutes
+  registerToEventRoutes,
+  awardRoutes
 );
 
 export { app };
