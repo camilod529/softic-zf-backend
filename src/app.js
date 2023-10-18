@@ -2,7 +2,15 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-import { sessionRoutes } from "./routes/session.routes.js";
+import {
+  sessionRoutes,
+  colaboratorRoutes,
+  companyRoutes,
+  tagRoutes,
+  eventRoutes,
+  commentRoutes,
+  registerToEventRoutes,
+} from "./routes/index.js";
 
 const app = express();
 
@@ -16,6 +24,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use("/api", sessionRoutes);
+app.use(
+  "/api",
+  sessionRoutes,
+  colaboratorRoutes,
+  companyRoutes,
+  tagRoutes,
+  eventRoutes,
+  commentRoutes,
+  registerToEventRoutes
+);
 
 export { app };

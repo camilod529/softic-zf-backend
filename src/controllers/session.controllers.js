@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { prisma } from "../db/prisma.js";
 import { generateToken } from "../jwt/jwt.js";
 
-const checkCompany = async (nick) => {
+const checkCompany = async (nick, res) => {
   const company = await prisma.tab_empresa.findUnique({
     where: {
       nit: nick,
@@ -15,12 +15,19 @@ const checkCompany = async (nick) => {
       .status(404)
       .json({ message: "There's no company with that credentials" });
 
-  res
-    .status(200)
-    .json({ token: generateToken({ ...company, rol: 2 }), data: company });
+  res.status(200).json({
+    token: generateToken({
+      nit: company.nit,
+      nombre_empresa: company.nombre_empresa,
+      estado_empresa: company.estado_empresa,
+      puntos: company.puntos,
+      rol: 2,
+    }),
+    data: company,
+  });
 };
 
-const checkColaborator = async (nick) => {
+const checkColaborator = async (nick, res) => {
   const colaborator = await prisma.tab_colaborador.findUnique({
     where: {
       documento_colaborador: nick,
@@ -48,7 +55,7 @@ export const login = async (req, res) => {
   try {
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
 
-    console.log(nick, contrasena)
+    console.log(nick, contrasena);
 
     const user = await prisma.tab_usuario.findUnique({
       where: {
@@ -67,17 +74,17 @@ export const login = async (req, res) => {
       }
 
       case 2: {
-        checkCompany(nick);
+        checkCompany(nick, res);
         break;
       }
 
       case 3: {
-        checkColaborator(nick);
+        checkColaborator(nick, res);
         break;
       }
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(400).json({ message: err });
   }
 };
