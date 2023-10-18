@@ -11,13 +11,9 @@ const checkCompany = async (nick) => {
   });
 
   if (!company)
-    return res
-      .status(404)
-      .json({ message: "There's no company with that credentials" });
+    return res.status(404).json({ message: "There's no company with that credentials" });
 
-  res
-    .status(200)
-    .json({ token: generateToken({ ...company, rol: 2 }), data: company });
+  res.status(200).json({ token: generateToken({ ...company, rol: 2 }), data: company });
 };
 
 const checkColaborator = async (nick) => {
@@ -28,9 +24,7 @@ const checkColaborator = async (nick) => {
   });
 
   if (!colaborator)
-    return res
-      .status(404)
-      .json({ message: "There's no colaborator with that credentials" });
+    return res.status(404).json({ message: "There's no colaborator with that credentials" });
 
   res.status(200).json({
     token: generateToken({ ...colaborator, rol: 3 }),
@@ -41,9 +35,9 @@ const checkColaborator = async (nick) => {
 export const login = async (req, res) => {
   const nick = req.body.nick;
   let contrasena = req.body.contrasena;
+  console.log(nick);
 
-  if (!nick || !contrasena)
-    return res.status(403).json({ message: "Fields are missing" });
+  if (!nick || !contrasena) return res.status(403).json({ message: "Fields are missing" });
 
   try {
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
@@ -57,6 +51,8 @@ export const login = async (req, res) => {
         estado: true,
       },
     });
+
+    console.log(user);
 
     if (!user) return res.status(404).json({ message: "Invalid credentials" });
 
