@@ -39,19 +39,21 @@ const checkColaborator = async (nick) => {
 };
 
 export const login = async (req, res) => {
-  const { nick } = req.body.nick;
+  const nick = req.body.nick;
   let contrasena = req.body.contrasena;
 
   if (!nick || !contrasena)
     return res.status(403).json({ message: "Fields are missing" });
 
   try {
-    contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
+    // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
+
+    console.log(nick, contrasena)
 
     const user = await prisma.tab_usuario.findUnique({
       where: {
         nick,
-        contrasena: contrasena,
+        contrasena,
         estado: true,
       },
     });
@@ -75,6 +77,7 @@ export const login = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log(err)
     return res.status(400).json({ message: err });
   }
 };

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 // Generate a token
 // payload: data to be stored in the token
 // expiresIn: time in which the token expires (e.g. "24h")
-export const generateToken = (payload, expiresIn) => {
+export const generateToken = (payload, expiresIn = "24h") => {
     return jwt.sign({ payload }, process.env.SECRET_KEY, { expiresIn });
 };
 

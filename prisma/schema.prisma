@@ -142,7 +142,7 @@ model tab_rol {
 }
 
 model tab_usuario {
-  nick       String  @id @db.VarChar
+  nick       Int     @id
   contrasena String  @db.VarChar
   rol        Int
   estado     Boolean @default(true)
