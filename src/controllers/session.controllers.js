@@ -42,10 +42,12 @@ export const login = async (req, res) => {
   try {
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
 
+    console.log(nick, contrasena)
+
     const user = await prisma.tab_usuario.findUnique({
       where: {
         nick,
-        contrasena: contrasena,
+        contrasena,
         estado: true,
       },
     });
@@ -71,7 +73,7 @@ export const login = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    console.log(err)
     return res.status(400).json({ message: err });
   }
 };

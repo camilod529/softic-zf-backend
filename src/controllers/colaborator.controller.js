@@ -1,29 +1,49 @@
-import { validateColaboratorSchema } from "../schemas/colaborator.schema.js";
+import { prisma } from "../db/prisma.js";
+import {
+  validateColaboratorSchema,
+  validateColaboratorSchemaUpdate,
+} from "../schemas/colaborator.schema.js";
+
+export const getColaborators = async (req, res) => {
+  await prisma.tab_colaborador
+    .findMany()
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(400).json({ message: err }));
+};
+
+export const getColaborator = async (req, res) => {
+  try {
+    const documento_colaborador = parseInt(req.params.documento_colaborador);
+
+    await prisma.tab_colaborador
+      .findUnique({
+        where: {
+          documento_colaborador,
+        },
+      })
+      .then((data) => res.status(200).json(data))
+      .catch((err) => res.status(400).json({ message: err }));
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};
 
 export const createColaborator = async (req, res) => {
   let result = validateColaboratorSchema(req.body);
 
   if (!result.success) return res.status(403).json(result.error);
 
-  try {
-    const colaborator = await prisma.tab_colaborador.create({
-      data: {
-        documento_colaborador: result.data.documento_colaborador,
-        empresa_colaborador: result.data.empresa_colaborador,
-        nombre_1: result.data.nombre_1,
-        nombre_2: result.data.nombre_2 || null,
-        apellido_1: result.data.apellido_1,
-        apellido_2: result.data.apellido_2 || null,
-        genero: result.data.genero,
-        correo_empresarial: result.data.correo_empresarial,
-        correo_personal: result.data.correo_personal,
-        fecha_nacimiento: result.data.fecha_nacimiento,
-        foto: result.data.foto,
-      },
-    });
+  await prisma.tab_colaborador
+    .create({
+      data: result.data,
+    })
+    .then(() => res.status(201).json({ message: "Colaborator created" }))
+    .catch((err) => res.status(400).json({ message: err }));
+};
 
-    res.status(201).json({ message: "Colaborator created" });
-  } catch (err) {
-    res.status(400).json({ message: err });
-  }
+export const updateColaborator = async (req, res) => {
+	let result = validateColaboratorSchemaUpdate(req.body);
+
+	if (!result.success) return res.status(403).json(result.error);
+
 };

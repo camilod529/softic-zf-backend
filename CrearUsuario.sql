@@ -1,7 +1,7 @@
 INSERT INTO tab_rol (id_rol, nombre_rol, descripcion_rol) VALUES
 (1, 'Administrador', 'Rol de administrador'),
-(2, 'Colaborador', 'Rol de colaborador'),
-(3, 'Empresa', 'Rol de empresa');
+(3, 'Colaborador', 'Rol de colaborador'),
+(2, 'Empresa', 'Rol de empresa');
 
 INSERT INTO tab_usuario (nick, contrasena, rol, estado) VALUES
 ('usuario_admin', 'contraseña_admin', 1, TRUE), -- Rol de Administrador

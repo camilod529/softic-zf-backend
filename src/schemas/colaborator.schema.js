@@ -16,3 +16,6 @@ const colaboratorSchema = object({
 
 export const validateColaboratorSchema = (colaborator) =>
   colaboratorSchema.safeParse(colaborator);
+
+export const validateColaboratorSchemaUpdate = (colaborator) =>
+  colaboratorSchema.partial().safeParse(colaborator);
