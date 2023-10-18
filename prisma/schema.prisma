@@ -8,19 +8,23 @@ datasource db {
 }
 
 model tab_colaborador {
-  documento_colaborador                                                   BigInt                      @id
-  empresa_colaborador                                                     BigInt
+  documento_colaborador                                                   String                      @id @db.VarChar
+  empresa_colaborador                                                     String                      @db.VarChar
   nombre_1                                                                String                      @db.VarChar
-  nombre_2                                                                String                      @db.VarChar
+  nombre_2                                                                String?                     @db.VarChar
   apellido_1                                                              String                      @db.VarChar
-  apellido_2                                                              String                      @db.VarChar
+  apellido_2                                                              String?                     @db.VarChar
   genero                                                                  String                      @db.VarChar
   correo_empresarial                                                      String?                     @db.VarChar
   correo_personal                                                         String                      @db.VarChar
   fecha_nacimiento                                                        DateTime                    @db.Date
   foto                                                                    String                      @db.VarChar
   estado_colaborador                                                      Boolean                     @default(true)
-  puntos_acumulados                                                       BigInt                      @default(0)
+  puntos_acumulados                                                       Int                         @default(0)
+  user_insert                                                             String?                     @db.VarChar
+  user_update                                                             String?                     @db.VarChar
+  date_insert                                                             DateTime?                   @db.Timestamp(6)
+  date_update                                                             DateTime?                   @db.Timestamp(6)
   tab_empresa                                                             tab_empresa                 @relation(fields: [empresa_colaborador], references: [nit], onDelete: NoAction, onUpdate: NoAction)
   tab_comentario                                                          tab_comentario[]
   tab_etiquetasxcolaborador                                               tab_etiquetasxcolaborador[]
@@ -31,10 +35,14 @@ model tab_colaborador {
 }
 
 model tab_comentario {
-  id_evento       BigInt
-  id_comentarista BigInt
-  id_comentario   BigInt
+  id_evento       Int
+  id_comentarista String          @db.VarChar
+  id_comentario   Int
   comentario      String          @db.VarChar
+  user_insert     String?         @db.VarChar
+  user_update     String?         @db.VarChar
+  date_insert     DateTime?       @db.Timestamp(6)
+  date_update     DateTime?       @db.Timestamp(6)
   tab_colaborador tab_colaborador @relation(fields: [id_comentarista], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
   tab_evento      tab_evento      @relation(fields: [id_evento], references: [id_evento], onDelete: NoAction, onUpdate: NoAction)
 
@@ -42,10 +50,14 @@ model tab_comentario {
 }
 
 model tab_empresa {
-  nit                BigInt               @id
+  nit                String               @id @db.VarChar
   nombre_empresa     String               @db.VarChar
   estado_empresa     Boolean              @default(true)
-  puntos             BigInt               @default(0)
+  puntos             Int                  @default(0)
+  user_insert        String?              @db.VarChar
+  user_update        String?              @db.VarChar
+  date_insert        DateTime?            @db.Timestamp(6)
+  date_update        DateTime?            @db.Timestamp(6)
   tab_colaborador    tab_colaborador[]
   tab_puntosxempresa tab_puntosxempresa[]
 }
@@ -55,12 +67,20 @@ model tab_etiqueta {
   nombre_etiqueta           String                      @db.VarChar
   descripcion_etiqueta      String                      @db.VarChar
   estado_etiqueta           Boolean                     @default(true)
+  user_insert               String?                     @db.VarChar
+  user_update               String?                     @db.VarChar
+  date_insert               DateTime?                   @db.Timestamp(6)
+  date_update               DateTime?                   @db.Timestamp(6)
   tab_etiquetasxcolaborador tab_etiquetasxcolaborador[]
 }
 
 model tab_etiquetasxcolaborador {
-  id_colaborador  BigInt
+  id_colaborador  String          @db.VarChar
   id_etiqueta     Int
+  user_insert     String?         @db.VarChar
+  user_update     String?         @db.VarChar
+  date_insert     DateTime?       @db.Timestamp(6)
+  date_update     DateTime?       @db.Timestamp(6)
   tab_colaborador tab_colaborador @relation(fields: [id_colaborador], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
   tab_etiqueta    tab_etiqueta    @relation(fields: [id_etiqueta], references: [id_etiqueta], onDelete: NoAction, onUpdate: NoAction)
 
@@ -68,7 +88,7 @@ model tab_etiquetasxcolaborador {
 }
 
 model tab_evento {
-  id_evento           BigInt                @id
+  id_evento           Int                   @id
   nombre_evento       String                @db.VarChar
   descripcion_evento  String                @db.VarChar
   foto_evento         String                @db.VarChar
@@ -79,24 +99,36 @@ model tab_evento {
   puntos_empresa      Int
   puntos_castigo      Int
   estado_boolean      Boolean               @default(true)
+  user_insert         String?               @db.VarChar
+  user_update         String?               @db.VarChar
+  date_insert         DateTime?             @db.Timestamp(6)
+  date_update         DateTime?             @db.Timestamp(6)
   tab_comentario      tab_comentario[]
   tab_registroxevento tab_registroxevento[]
 }
 
 model tab_premio {
-  id_premio            BigInt                 @id
+  id_premio            Int                    @id
   nombre_premio        String                 @db.VarChar
   detalles_premio      String                 @db.VarChar
   coste_premio         Int
   estado_premio        Boolean
+  user_insert          String?                @db.VarChar
+  user_update          String?                @db.VarChar
+  date_insert          DateTime?              @db.Timestamp(6)
+  date_update          DateTime?              @db.Timestamp(6)
   tab_premio_reclamado tab_premio_reclamado[]
 }
 
 model tab_premio_reclamado {
-  id_reclamo                 BigInt                @id
-  id_premio                  BigInt
-  id_reclamante              BigInt
+  id_reclamo                 Int                   @id
+  id_premio                  Int
+  id_reclamante              String                @db.VarChar
   estado_reclamo             Boolean               @default(false)
+  user_insert                String?               @db.VarChar
+  user_update                String?               @db.VarChar
+  date_insert                DateTime?             @db.Timestamp(6)
+  date_update                DateTime?             @db.Timestamp(6)
   tab_premio                 tab_premio            @relation(fields: [id_premio], references: [id_premio], onDelete: NoAction, onUpdate: NoAction)
   tab_colaborador            tab_colaborador       @relation(fields: [id_reclamante], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
   tab_premio_reclamado       tab_premio_reclamado  @relation("tab_premio_reclamadoTotab_premio_reclamado", fields: [id_reclamo], references: [id_reclamo], onDelete: NoAction, onUpdate: NoAction)
@@ -104,29 +136,41 @@ model tab_premio_reclamado {
 }
 
 model tab_puntosxcolaborador {
-  id_puntos        BigInt          @id
-  id_asociado      BigInt
+  id_puntos        Int             @id
+  id_asociado      String          @db.VarChar
   motivo_puntos    String          @db.VarChar
   cantidad_puntos  Int
   fecha_movimiento DateTime        @default(now()) @db.Timestamp(6)
+  user_insert      String?         @db.VarChar
+  user_update      String?         @db.VarChar
+  date_insert      DateTime?       @db.Timestamp(6)
+  date_update      DateTime?       @db.Timestamp(6)
   tab_colaborador  tab_colaborador @relation(fields: [id_asociado], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model tab_puntosxempresa {
-  id_puntos_empresa BigInt      @id
-  id_empresa        BigInt
+  id_puntos_empresa Int         @id
+  id_empresa        String      @db.VarChar
   motivo_puntos     String      @db.VarChar
   cantidad_puntos   Int
   fecha_movimiento  DateTime    @default(now()) @db.Timestamp(6)
+  user_insert       String?     @db.VarChar
+  user_update       String?     @db.VarChar
+  date_insert       DateTime?   @db.Timestamp(6)
+  date_update       DateTime?   @db.Timestamp(6)
   tab_empresa       tab_empresa @relation(fields: [id_empresa], references: [nit], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tab_registroxevento {
-  id_evento                                                           BigInt
-  id_colaborador                                                      BigInt
-  referido_por                                                        BigInt?
+  id_evento                                                           Int
+  id_colaborador                                                      String           @db.VarChar
+  referido_por                                                        String?          @db.VarChar
   asistencia                                                          Boolean          @default(false)
+  user_insert                                                         String?          @db.VarChar
+  user_update                                                         String?          @db.VarChar
+  date_insert                                                         DateTime?        @db.Timestamp(6)
+  date_update                                                         DateTime?        @db.Timestamp(6)
   tab_colaborador_tab_registroxevento_id_colaboradorTotab_colaborador tab_colaborador  @relation("tab_registroxevento_id_colaboradorTotab_colaborador", fields: [id_colaborador], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
   tab_evento                                                          tab_evento       @relation(fields: [id_evento], references: [id_evento], onDelete: NoAction, onUpdate: NoAction)
   tab_colaborador_tab_registroxevento_referido_porTotab_colaborador   tab_colaborador? @relation("tab_registroxevento_referido_porTotab_colaborador", fields: [referido_por], references: [documento_colaborador], onDelete: NoAction, onUpdate: NoAction)
@@ -138,13 +182,39 @@ model tab_rol {
   id_rol          Int           @id
   nombre_rol      String        @db.VarChar
   descripcion_rol String        @db.VarChar
+  user_insert     String?       @db.VarChar
+  user_update     String?       @db.VarChar
+  date_insert     DateTime?     @db.Timestamp(6)
+  date_update     DateTime?     @db.Timestamp(6)
   tab_usuario     tab_usuario[]
 }
 
 model tab_usuario {
-  nick       Int     @id
-  contrasena String  @db.VarChar
-  rol        Int
-  estado     Boolean @default(true)
-  tab_rol    tab_rol @relation(fields: [rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction)
+  nick        String    @id @db.VarChar
+  contrasena  String    @db.VarChar
+  rol         Int
+  estado      Boolean   @default(true)
+  user_insert String?   @db.VarChar
+  user_update String?   @db.VarChar
+  date_insert DateTime? @db.Timestamp(6)
+  date_update DateTime? @db.Timestamp(6)
+  tab_rol     tab_rol   @relation(fields: [rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tab_borrados {
+  id_consec  Int      @id
+  nom_tabla  String   @db.VarChar
+  usr_delete String   @db.VarChar
+  fec_delete DateTime @db.Timestamp(6)
+}
+
+model tab_parametros_puntos {
+  id_parametro    Int       @id
+  tipo_parametro  String    @db.VarChar
+  cantidad_puntos Int
+  user_insert     String?   @db.VarChar
+  user_update     String?   @db.VarChar
+  date_insert     DateTime? @db.Timestamp(6)
+  date_update     DateTime? @db.Timestamp(6)
 }
