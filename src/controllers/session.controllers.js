@@ -48,7 +48,9 @@ const checkColaborator = async (nick, res) => {
     }),
     data: {
       ...colaborator,
-      edad: new Date().getFullYear() - new Date(colaborator.fecha_nacimiento),
+      edad:
+        (new Date().getFullYear() - new Date(colaborator.fecha_nacimiento)) /
+        315360000,
       rol: 3,
     },
   });
