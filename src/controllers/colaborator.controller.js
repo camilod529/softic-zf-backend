@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 
 import { prisma } from "../db/prisma.js";
-import { uploadImage, deleteImage } from "../libs/cloudinary.js";
+import { uploadImage } from "../libs/cloudinary.js";
 import {
   validateColaboratorSchema,
   validateColaboratorSchemaUpdate,

@@ -6,3 +6,4 @@ export { eventRoutes } from "./event.routes.js";
 export { commentRoutes } from "./comment.routes.js";
 export { registerToEventRoutes } from "./registerToEvent.routes.js";
 export { awardRoutes } from "./award.routes.js";
+export { pointsRoutes } from "./points.routes.js";

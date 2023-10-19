@@ -1,25 +1,51 @@
+import fs from "fs-extra";
+
 import { prisma } from "../db/prisma.js";
+import { uploadImage } from "../libs/cloudinary.js";
 import {
   validateEventSchema,
   validateEventSchemaUpdate,
 } from "../schemas/event.schema.js";
 
 export const getEvents = async (req, res) => {
-  await prisma.tab_evento
-    .findMany()
-    .then((data) => res.status(200).json(data))
-    .catch((err) => res.status(400).json({ message: err }));
+  try {
+    const eventos = await prisma.tab_evento.findMany();
+
+    eventos = eventos.map(async (evento) => {
+      const etiquetas = await prisma.tab_etiquetasxevento.findMany({
+        where: {
+          id_evento: evento.id_evento,
+        },
+      });
+
+      return {
+        ...evento,
+        etiquetas,
+      };
+    });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
 };
 
 export const getEvent = async (req, res) => {
-  await prisma.tab_evento
-    .findUnique({
+  try {
+    const evento = await prisma.tab_evento.findUnique({
       where: {
         id_evento: parseInt(req.params.id_evento),
       },
-    })
-    .then((data) => res.status(200).json(data))
-    .catch((err) => res.status(400).json({ message: err }));
+    });
+
+    const etiquetas = await prisma.tab_etiquetasxevento.findMany({
+      where: {
+        id_evento: evento.id_evento,
+      },
+    });
+
+    res.status(200).json({ ...evento, etiquetas });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
 };
 
 export const createEvent = async (req, res) => {
@@ -27,9 +53,20 @@ export const createEvent = async (req, res) => {
 
   if (!result.success) return res.status(403).json(result.error);
 
+  if (!req.files?.foto_evento)
+    return res.status(403).json({ message: "No file provided" });
+
+  let foto_evento;
+
+  await uploadImage(req.files.foto_evento.tempFilePath)
+    .then((data) => (foto_evento = data.url))
+    .catch((err) => res.status(400).json({ message: err }));
+
+  await fs.remove(req.files.foto_evento.tempFilePath);
+
   await prisma.tab_evento
     .create({
-      data: result.data,
+      data: { ...result.data, foto_evento },
     })
     .then(() => res.status(201).json({ message: "Event created" }))
     .catch((err) => res.status(400).json({ message: err }));

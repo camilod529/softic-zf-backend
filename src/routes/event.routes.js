@@ -12,7 +12,7 @@ const router = Router();
 router.get("/events", getEvents);
 router.get("/event", getEvent);
 
-router.post("/events", createEvent);
+router.post("/events/:id_evento", createEvent);
 
 router.put("/events", updateEvent);
 

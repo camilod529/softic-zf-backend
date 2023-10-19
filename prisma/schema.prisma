@@ -72,6 +72,7 @@ model tab_etiqueta {
   date_insert               DateTime?                   @db.Timestamp(6)
   date_update               DateTime?                   @db.Timestamp(6)
   tab_etiquetasxcolaborador tab_etiquetasxcolaborador[]
+  tab_etiquetasxevento      tab_etiquetasxevento[]
 }
 
 model tab_etiquetasxcolaborador {
@@ -88,24 +89,25 @@ model tab_etiquetasxcolaborador {
 }
 
 model tab_evento {
-  id_evento           Int                   @id
-  nombre_evento       String                @db.VarChar
-  descripcion_evento  String                @db.VarChar
-  foto_evento         String                @db.VarChar
-  fecha_evento        DateTime              @db.Timestamp(6)
-  fecha_evento_fin    DateTime              @db.Timestamp(6)
-  aforo_maximo        Int
-  aforo_registrado    Int
-  puntos_colaborador  Int
-  puntos_empresa      Int
-  puntos_castigo      Int
-  estado_boolean      Boolean               @default(true)
-  user_insert         String?               @db.VarChar
-  user_update         String?               @db.VarChar
-  date_insert         DateTime?             @db.Timestamp(6)
-  date_update         DateTime?             @db.Timestamp(6)
-  tab_comentario      tab_comentario[]
-  tab_registroxevento tab_registroxevento[]
+  id_evento            Int                    @id
+  nombre_evento        String                 @db.VarChar
+  descripcion_evento   String                 @db.VarChar
+  foto_evento          String                 @db.VarChar
+  fecha_evento         DateTime               @db.Timestamp(6)
+  fecha_evento_fin     DateTime               @db.Timestamp(6)
+  aforo_maximo         Int
+  aforo_registrado     Int
+  puntos_colaborador   Int
+  puntos_empresa       Int
+  puntos_castigo       Int
+  estado_boolean       Boolean                @default(true)
+  user_insert          String?                @db.VarChar
+  user_update          String?                @db.VarChar
+  date_insert          DateTime?              @db.Timestamp(6)
+  date_update          DateTime?              @db.Timestamp(6)
+  tab_comentario       tab_comentario[]
+  tab_etiquetasxevento tab_etiquetasxevento[]
+  tab_registroxevento  tab_registroxevento[]
 }
 
 model tab_premio {
@@ -219,4 +221,17 @@ model tab_parametros_puntos {
   user_update     String?   @db.VarChar
   date_insert     DateTime? @db.Timestamp(6)
   date_update     DateTime? @db.Timestamp(6)
+}
+
+model tab_etiquetasxevento {
+  id_evento    Int
+  id_etiqueta  Int
+  user_insert  String?      @db.VarChar
+  user_update  String?      @db.VarChar
+  date_insert  DateTime?    @db.Timestamp(6)
+  date_update  DateTime?    @db.Timestamp(6)
+  tab_etiqueta tab_etiqueta @relation(fields: [id_etiqueta], references: [id_etiqueta], onDelete: NoAction, onUpdate: NoAction)
+  tab_evento   tab_evento   @relation(fields: [id_evento], references: [id_evento], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_evento, id_etiqueta])
 }
