@@ -33,11 +33,13 @@ const checkColaborator = async (nick, res) => {
       .status(404)
       .json({ message: "There's no colaborator with that credentials" });
 
-  colaborator.empresa_colaborador = await prisma.tab_empresa.findUnique({
-    where: {
-      nit: colaborator.empresa_colaborador,
-    },
-  });
+  colaborator.empresa_colaborador = await prisma.tab_empresa
+    .findUnique({
+      where: {
+        nit: colaborator.empresa_colaborador,
+      },
+    })
+    .then((data) => data.nombre_empresa);
 
   res.status(200).json({
     token: generateToken({ ...colaborator, rol: 3 }),
