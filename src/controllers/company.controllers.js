@@ -39,8 +39,10 @@ export const getCompany = async (req, res) => {
 };
 
 export const getCompanyByName = async (req, res) => {
+  console.log(req.params.nombre_empresa)
+
   await prisma.tab_empresa
-    .findUnique({
+    .findFirst({
       where: {
         nombre_empresa: req.params.nombre_empresa,
       },

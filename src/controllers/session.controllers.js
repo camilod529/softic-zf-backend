@@ -42,7 +42,13 @@ const checkColaborator = async (nick, res) => {
     .then((data) => data.nombre_empresa);
 
   res.status(200).json({
-    token: generateToken({ ...colaborator, rol: 3 }),
+    token: generateToken({
+      ...colaborator,
+      edad:
+        new Date().getFullYear() -
+        new Date(colaborator.fecha_nacimiento).getFullYear(),
+      rol: 3,
+    }),
     data: { ...colaborator, rol: 3 },
   });
 };
