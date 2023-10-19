@@ -64,7 +64,7 @@ export const getCompanyByName = async (req, res) => {
 
     const colaborators = await prisma.tab_colaborador.findMany({
       where: {
-        empresa_colaborador: req.params.nombre_empresa,
+        empresa_colaborador: company.nit,
       },
     });
 
