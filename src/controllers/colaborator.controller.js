@@ -1,4 +1,5 @@
 import { prisma } from "../db/prisma.js";
+import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import {
   validateColaboratorSchema,
   validateColaboratorSchemaUpdate,
@@ -33,9 +34,20 @@ export const createColaborator = async (req, res) => {
 
   if (!result.success) return res.status(403).json(result.error);
 
+  if (!req.file?.foto)
+    return res.status(400).json({ message: "No file provided" });
+
+  let foto;
+
+  await uploadImage(req.file.foto.tempFilePath)
+    .then((data) => (foto = data.url))
+    .catch((err) => res.status(400).json({ message: err }));
+
+  await fs.remove(req.files.foto.tempFilePath);
+
   await prisma.tab_colaborador
     .create({
-      data: result.data,
+      data: { ...result.data, foto },
     })
     .then(() => res.status(201).json({ message: "Colaborator created" }))
     .catch((err) => console.log(err) && res.status(400).json({ message: err }));
