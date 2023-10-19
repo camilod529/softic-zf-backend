@@ -5,41 +5,49 @@ import {
 } from "../schemas/company.schema.js";
 
 export const getCompanies = async (req, res) => {
-  await prisma.tab_empresa
-    .findMany()
-    .then((data) => {
-      const companies = data.map((company) => {
-        return {
-          nombre_empresa: company.nombre_empresa,
-          puntos: company.puntos,
-        };
+  const companies = await prisma.tab_empresa.findMany();
+
+  companies = await Promise.all(
+    companies.map(async (company) => {
+      const colaborators = await prisma.tab_colaborador.findMany({
+        where: {
+          empresa_colaborador: company.nit,
+        },
       });
 
-      res.status(200).json(companies);
+      return {
+        nombre_empresa: company.nombre_empresa,
+        puntos: company.puntos,
+        colaboradores: colaborators,
+      };
     })
-    .catch((err) => res.status(400).json({ message: err }));
+  );
+
+  res.status(200).json(companies);
 };
 
 export const getCompany = async (req, res) => {
-  await prisma.tab_empresa
-    .findUnique({
-      where: {
-        nit: req.params.nit,
-      },
-    })
-    .then((data) => {
-      const company = {
-        nombre_empresa: data.nombre_empresa,
-        puntos: data.puntos,
-      };
+  const company = await prisma.tab_empresa.findUnique({
+    where: {
+      nit: req.params.nit,
+    },
+  });
 
-      res.status(200).json(company);
-    })
-    .catch((err) => res.status(400).json({ message: err }));
+  const colaborators = await prisma.tab_colaborador.findMany({
+    where: {
+      empresa_colaborador: req.params.nit,
+    },
+  });
+
+  res.status(200).json({
+    nombre_empresa: company.nombre_empresa,
+    puntos: company.puntos,
+    colaboradores: colaborators,
+  });
 };
 
 export const getCompanyByName = async (req, res) => {
-  console.log(req.params.nombre_empresa)
+  console.log(req.params.nombre_empresa);
 
   await prisma.tab_empresa
     .findFirst({
