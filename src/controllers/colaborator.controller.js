@@ -54,7 +54,7 @@ export const createColaborator = async (req, res) => {
       data: { ...result.data, foto },
     })
     .then(() => res.status(201).json({ message: "Colaborator created" }))
-    .catch((err) => console.log(err) && res.status(400).json({ message: err }));
+    .catch((err) => res.status(400).json({ message: err }));
 };
 
 export const updateColaborator = async (req, res) => {
