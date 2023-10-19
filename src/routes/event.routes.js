@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.get("/events", getEvents);
-router.get("/event", getEvent);
+router.get("/event/:id_evento", getEvent);
 
 router.post("/events/:id_evento", createEvent);
 

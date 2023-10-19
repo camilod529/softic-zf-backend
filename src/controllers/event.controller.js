@@ -9,20 +9,21 @@ import {
 
 export const getEvents = async (req, res) => {
   try {
-    const eventos = await prisma.tab_evento.findMany();
+    let eventos = await prisma.tab_evento.findMany();
 
-    eventos = eventos.map(async (evento) => {
-      const etiquetas = await prisma.tab_etiquetasxevento.findMany({
-        where: {
-          id_evento: evento.id_evento,
-        },
-      });
+    eventos = await Promise.all(
+      eventos.map(async (evento) => {
+        const etiquetas = await prisma.tab_etiquetasxevento.findMany({
+          where: {
+            id_evento: evento.id_evento,
+          },
+        });
 
-      return {
-        ...evento,
-        etiquetas,
-      };
-    });
+        return { ...evento, etiquetas };
+      })
+    );
+
+    res.status(200).json(eventos);
   } catch (err) {
     res.status(400).json({ message: err });
   }
@@ -30,7 +31,7 @@ export const getEvents = async (req, res) => {
 
 export const getEvent = async (req, res) => {
   try {
-    const evento = await prisma.tab_evento.findUnique({
+    let evento = await prisma.tab_evento.findUnique({
       where: {
         id_evento: parseInt(req.params.id_evento),
       },
