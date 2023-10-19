@@ -41,6 +41,10 @@ const checkColaborator = async (nick, res) => {
     })
     .then((data) => data.nombre_empresa);
 
+  const edad =
+    new Date().getFullYear() -
+    new Date(colaborator.fecha_nacimiento).getFullYear();
+
   res.status(200).json({
     token: generateToken({
       ...colaborator,
@@ -48,9 +52,7 @@ const checkColaborator = async (nick, res) => {
     }),
     data: {
       ...colaborator,
-      edad:
-        (new Date().getFullYear() - new Date(colaborator.fecha_nacimiento)) /
-        315360000,
+      edad,
       rol: 3,
     },
   });
