@@ -17,6 +17,7 @@ export const getCompanies = async (req, res) => {
         });
 
         return {
+          nit: company.nit,
           nombre_empresa: company.nombre_empresa,
           puntos: company.puntos,
           colaboradores: colaborators,
@@ -45,6 +46,7 @@ export const getCompany = async (req, res) => {
     });
 
     res.status(200).json({
+      nit: company.nit,
       nombre_empresa: company.nombre_empresa,
       puntos: company.puntos,
       colaboradores: colaborators,
@@ -69,6 +71,7 @@ export const getCompanyByName = async (req, res) => {
     });
 
     res.status(200).json({
+      nit: company.nit,
       nombre_empresa: company.nombre_empresa,
       puntos: company.puntos,
       colaboradores: colaborators,
