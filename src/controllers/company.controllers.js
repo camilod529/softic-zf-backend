@@ -38,6 +38,24 @@ export const getCompany = async (req, res) => {
     .catch((err) => res.status(400).json({ message: err }));
 };
 
+export const getCompanyByName = async (req, res) => {
+  await prisma.tab_empresa
+    .findUnique({
+      where: {
+        nombre_empresa: req.params.nombre_empresa,
+      },
+    })
+    .then((data) => {
+      const company = {
+        nombre_empresa: data.nombre_empresa,
+        puntos: data.puntos,
+      };
+
+      res.status(200).json(company);
+    })
+    .catch((err) => res.status(400).json({ message: err }));
+};
+
 export const createCompany = async (req, res) => {
   let result = validateCompanySchema(req.body);
 
