@@ -35,7 +35,7 @@ const checkColaborator = async (nick, res) => {
 
   colaborator.empresa_colaborador = await prisma.tab_empresa.findUnique({
     where: {
-      nit: colaborator.nit_empresa,
+      nit: colaborator.empresa_colaborador,
     },
   });
 
@@ -56,8 +56,6 @@ export const login = async (req, res) => {
   try {
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
 
-    console.log(nick, contrasena);
-
     const user = await prisma.tab_usuario.findUnique({
       where: {
         nick,
@@ -77,11 +75,13 @@ export const login = async (req, res) => {
       }
 
       case 2: {
+        console.log("company");
         checkCompany(nick, res);
         break;
       }
 
       case 3: {
+        console.log("colaborator");
         checkColaborator(nick, res);
         break;
       }
