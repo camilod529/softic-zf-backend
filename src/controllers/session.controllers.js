@@ -44,12 +44,13 @@ const checkColaborator = async (nick, res) => {
   res.status(200).json({
     token: generateToken({
       ...colaborator,
-      edad:
-        new Date().getFullYear() -
-        new Date(colaborator.fecha_nacimiento).getFullYear(),
       rol: 3,
     }),
-    data: { ...colaborator, rol: 3 },
+    data: {
+      ...colaborator,
+      edad: new Date().getFullYear() - new Date(colaborator.fecha_nacimiento),
+      rol: 3,
+    },
   });
 };
 
