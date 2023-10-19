@@ -47,8 +47,6 @@ export const createColaborator = async (req, res) => {
     .then((data) => (foto = data.url))
     .catch((err) => res.status(400).json({ message: err }));
 
-  await fs.remove(req.files.foto.tempFilePath);
-
   await prisma.tab_colaborador
     .create({
       data: { ...result.data, foto },
