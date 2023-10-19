@@ -43,7 +43,7 @@ export const createColaborator = async (req, res) => {
 
   let foto;
 
-  await uploadImage(req.file.foto.tempFilePath)
+  await uploadImage(req.files.foto.tempFilePath)
     .then((data) => (foto = data.url))
     .catch((err) => res.status(400).json({ message: err }));
 
