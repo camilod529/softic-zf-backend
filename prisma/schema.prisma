@@ -113,7 +113,7 @@ model tab_premio {
   nombre_premio        String                 @db.VarChar
   detalles_premio      String                 @db.VarChar
   coste_premio         Int
-  estado_premio        Boolean
+  estado_premio        Boolean                @default(true)
   user_insert          String?                @db.VarChar
   user_update          String?                @db.VarChar
   date_insert          DateTime?              @db.Timestamp(6)

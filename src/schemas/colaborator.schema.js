@@ -11,7 +11,6 @@ const colaboratorSchema = object({
   correo_empresarial: string().email().optional(),
   correo_personal: string().email(),
   fecha_nacimiento: string().datetime(),
-  foto: string().url()
 });
 
 export const validateColaboratorSchema = (colaborator) =>
