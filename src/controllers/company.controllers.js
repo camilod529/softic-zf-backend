@@ -5,7 +5,7 @@ import {
 } from "../schemas/company.schema.js";
 
 export const getCompanies = async (req, res) => {
-  const companies = await prisma.tab_empresa.findMany();
+  let companies = await prisma.tab_empresa.findMany();
 
   companies = await Promise.all(
     companies.map(async (company) => {
