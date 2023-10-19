@@ -51,7 +51,7 @@ export const createColaborator = async (req, res) => {
 
   await prisma.tab_colaborador
     .create({
-      data: { ...result.data, foto },
+      data: { ...result.data },
     })
     .then(() => res.status(201).json({ message: "Colaborator created" }))
     .catch((err) => res.status(400).json({ message: err }));

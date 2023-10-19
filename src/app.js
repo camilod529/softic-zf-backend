@@ -1,7 +1,5 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
-import fileupload from "express-fileupload";
 
 import {
   sessionRoutes,
@@ -22,15 +20,8 @@ app.set("port", process.env.PORT || 3000);
 
 // Middlewares
 app.use(cors());
-app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  fileupload({
-    useTempFiles: true,
-    tempFileDir: "./upload",
-  })
-);
 
 // Routes
 app.use(

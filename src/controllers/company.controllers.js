@@ -1,8 +1,5 @@
 import { prisma } from "../db/prisma.js";
-import {
-  validateCompanySchema,
-  validateCompanySchemaUpdate,
-} from "../schemas/company.schema.js";
+import { validateCompanySchema, validateCompanySchemaUpdate } from "../schemas/company.schema.js";
 
 export const getCompanies = async (req, res) => {
   try {
@@ -85,6 +82,8 @@ export const createCompany = async (req, res) => {
   let result = validateCompanySchema(req.body);
 
   if (!result.success) return res.status(403).json(result.error);
+
+  console.log("a");
 
   await prisma.tab_empresa
     .create({
