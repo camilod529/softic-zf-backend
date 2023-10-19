@@ -1,3 +1,5 @@
+import fs from "fs-extra";
+
 import { prisma } from "../db/prisma.js";
 import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import {
@@ -34,8 +36,10 @@ export const createColaborator = async (req, res) => {
 
   if (!result.success) return res.status(403).json(result.error);
 
-  if (!req.file?.foto)
-    return res.status(400).json({ message: "No file provided" });
+  console.log(req.files)
+
+  if (!req.files?.foto)
+    return res.status(403).json({ message: "No file provided" });
 
   let foto;
 
