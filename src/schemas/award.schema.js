@@ -1,7 +1,6 @@
 import { object, number, string, boolean } from "zod";
 
 const awardSchema = object({
-  id_premio: number(),
   nombre_premio: string(),
   detalles_premio: string(),
   coste_premio: number().min(0),

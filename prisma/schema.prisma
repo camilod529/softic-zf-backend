@@ -52,6 +52,8 @@ model tab_comentario {
 model tab_empresa {
   nit                String               @id @db.VarChar
   nombre_empresa     String               @db.VarChar
+  oficina            String               @db.VarChar
+  logo               String               @db.VarChar
   estado_empresa     Boolean              @default(true)
   puntos             Int                  @default(0)
   user_insert        String?              @db.VarChar
@@ -111,11 +113,12 @@ model tab_evento {
 }
 
 model tab_premio {
-  id_premio            Int                    @id
+  id_premio            Int                    @id @default(autoincrement())
   nombre_premio        String                 @db.VarChar
   detalles_premio      String                 @db.VarChar
   coste_premio         Int
   estado_premio        Boolean                @default(true)
+  foto                 String                 @db.VarChar
   user_insert          String?                @db.VarChar
   user_update          String?                @db.VarChar
   date_insert          DateTime?              @db.Timestamp(6)

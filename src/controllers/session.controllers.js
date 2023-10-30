@@ -67,6 +67,7 @@ export const login = async (req, res) => {
     return res.status(403).json({ message: "Fields are missing" });
 
   try {
+    // Esto se debe descomentar para un futuro, ya que las contraseñas deben estar encriptadas
     // contrasena = crypto.createHash("md5").update(req.body.contrasena).digest("hex");
 
     const user = await prisma.tab_usuario.findUnique({
@@ -77,8 +78,6 @@ export const login = async (req, res) => {
       },
     });
 
-    console.log(user);
-
     if (!user) return res.status(404).json({ message: "Invalid credentials" });
 
     switch (user.rol) {
@@ -88,13 +87,11 @@ export const login = async (req, res) => {
       }
 
       case 2: {
-        console.log("company");
         checkCompany(nick, res);
         break;
       }
 
       case 3: {
-        console.log("colaborator");
         checkColaborator(nick, res);
         break;
       }
