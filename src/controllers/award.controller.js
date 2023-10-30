@@ -93,14 +93,27 @@ export const updateAwardState = async (req, res) => {
 };
 
 export const reclaimAward = async (req, res) => {
-  let result = validateReclaimAwardSchema(req.body);
+  try {
+    const id_reclamo = await prisma.tab_premio_reclamado.findMany({
+      select: {
+        id_premio: true,
+      },
+    });
 
-  if (!result.success) return res.status(403).json(result.error);
+    req.body.id_reclamo = id_reclamo.length + 1;
+    req.body.id_premio = parseInt(req.params.id_premio);
+    req.body.id_reclamante = req.decoded.documento_colaborador;
 
-  await prisma.tab_premio_reclamado
-    .create({
-      data: result.data,
-    })
-    .then(() => res.status(201).json({ message: "Award reclaimed" }))
-    .catch((err) => res.status(400).json(err));
+    let result = validateReclaimAwardSchema(req.body);
+
+    if (!result.success) return res.status(403).json(result.error);
+
+    await prisma.tab_premio.create({
+      data: { ...result.data },
+    });
+
+    res.status(201).json({ message: "Award reclaimed" });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
 };

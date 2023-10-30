@@ -6,12 +6,20 @@ import {
   getColaborator,
   createColaborator,
   updateColaborator,
+  deactivateColaborator,
+  getColaboratorsByCompany,
 } from "../controllers/colaborator.controller.js";
 import { verifyToken } from "../jwt/jwt.js";
 
 const router = Router();
 
-router.get("/colaborators", verifyToken, verifyCompany, getColaborators);
+router.get("/colaborators", verifyToken, getColaborators);
+router.get(
+  "/colaborators/byCompany",
+  verifyToken,
+  verifyCompany,
+  getColaboratorsByCompany
+);
 router.get(
   "/colaborator/:documento_colaborador",
   verifyToken,
@@ -24,6 +32,12 @@ router.put(
   verifyToken,
   verifyCompany,
   updateColaborator
+);
+router.put(
+  "/colaborator/deactivate/:documento_colaborador",
+  verifyToken,
+  verifyCompany,
+  deactivateColaborator
 );
 
 export { router as colaboratorRoutes };

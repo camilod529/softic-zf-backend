@@ -80,6 +80,7 @@ export const getCompanyByName = async (req, res) => {
       nombre_empresa: company.nombre_empresa,
       puntos: company.puntos,
       colaboradores: colaborators,
+      logo: company.logo,
     });
   } catch (err) {
     res.status(400).json({ message: err });

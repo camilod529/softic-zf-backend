@@ -7,7 +7,7 @@ export const verifyAdmin = (req, res, next) => {
 };
 
 export const verifyCompany = (req, res, next) => {
-  if (req.decoded.rol in [1, 2]) next();
+  if (req.decoded.rol === 1 || req.decoded.rol === 2) next();
   else
     res
       .status(403)
@@ -15,7 +15,8 @@ export const verifyCompany = (req, res, next) => {
 };
 
 export const verifyColaborator = (req, res, next) => {
-  if (req.decoded.rol in [1, 2, 3]) next();
+  if (req.decoded.rol === 1 || req.decoded.rol === 2 || req.decoded.rol === 3)
+    next();
   else
     res
       .status(403)

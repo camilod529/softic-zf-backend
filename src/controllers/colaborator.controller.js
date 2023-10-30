@@ -9,7 +9,11 @@ import {
 
 export const getColaborators = async (req, res) => {
   await prisma.tab_colaborador
-    .findMany()
+    .findMany({
+      where: {
+        estado_colaborador: true,
+      },
+    })
     .then((data) => res.status(200).json(data))
     .catch((err) => res.status(400).json({ message: err }));
 };
@@ -21,7 +25,24 @@ export const getColaborator = async (req, res) => {
     await prisma.tab_colaborador
       .findUnique({
         where: {
+          empresa_colaborador: req.decoded.nit,
           documento_colaborador,
+        },
+      })
+      .then((data) => res.status(200).json(data))
+      .catch((err) => res.status(400).json({ message: err }));
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};
+
+export const getColaboratorsByCompany = async (req, res) => {
+  try {
+    await prisma.tab_colaborador
+      .findMany({
+        where: {
+          empresa_colaborador: req.decoded.nit,
+          estado_colaborador: true,
         },
       })
       .then((data) => res.status(200).json(data))
@@ -97,4 +118,20 @@ export const updateColaborator = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ message: err });
   }
+};
+
+export const deactivateColaborator = async (req, res) => {
+  const documento_colaborador = req.params.documento_colaborador;
+
+  await prisma.tab_colaborador
+    .update({
+      where: {
+        documento_colaborador,
+      },
+      data: {
+        estado_colaborador: false,
+      },
+    })
+    .then(() => res.status(201).json({ message: "Colaborator deactivated" }))
+    .catch((err) => res.status(400).json({ message: err }));
 };

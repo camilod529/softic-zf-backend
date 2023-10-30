@@ -21,7 +21,7 @@ const checkCompany = async (nick, res) => {
   });
 };
 
-const checkColaborator = async (nick, res) => {
+const checkColaborator = async (nick, primera_vez, res) => {
   const colaborator = await prisma.tab_colaborador.findUnique({
     where: {
       documento_colaborador: nick,
@@ -41,6 +41,22 @@ const checkColaborator = async (nick, res) => {
     })
     .then((data) => data.nombre_empresa);
 
+  const etiquetasxcolaboador = await prisma.tab_etiquetasxcolaborador
+    .findMany({
+      where: {
+        id_colaborador: colaborator.documento_colaborador,
+      },
+    })
+    .then((data) => data.map((item) => item.id_etiqueta));
+
+  const etiquetas = await prisma.tab_etiqueta.findMany({
+    where: {
+      id_etiqueta: {
+        in: etiquetasxcolaboador,
+      },
+    },
+  });
+
   const edad =
     new Date().getFullYear() -
     new Date(colaborator.fecha_nacimiento).getFullYear();
@@ -52,7 +68,9 @@ const checkColaborator = async (nick, res) => {
     }),
     data: {
       ...colaborator,
+      primera_vez,
       edad,
+      gustos: etiquetas,
       rol: 3,
     },
   });
@@ -92,7 +110,7 @@ export const login = async (req, res) => {
       }
 
       case 3: {
-        checkColaborator(nick, res);
+        checkColaborator(nick, user.pirmeravez, res);
         break;
       }
     }

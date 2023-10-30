@@ -12,7 +12,7 @@ import { verifyToken } from "../jwt/jwt.js";
 
 const router = Router();
 
-router.get("/company", verifyToken, verifyAdmin, getCompanies);
+router.get("/company", verifyToken, getCompanies);
 router.get("/company/:nit", verifyToken, verifyAdmin, getCompany);
 router.get("/company/name/:nombre_empresa", verifyToken, getCompanyByName);
 
