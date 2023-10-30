@@ -41,22 +41,6 @@ const checkColaborator = async (nick, primera_vez, res) => {
     })
     .then((data) => data.nombre_empresa);
 
-  const etiquetasxcolaboador = await prisma.tab_etiquetasxcolaborador
-    .findMany({
-      where: {
-        id_colaborador: colaborator.documento_colaborador,
-      },
-    })
-    .then((data) => data.map((item) => item.id_etiqueta));
-
-  const etiquetas = await prisma.tab_etiqueta.findMany({
-    where: {
-      id_etiqueta: {
-        in: etiquetasxcolaboador,
-      },
-    },
-  });
-
   const edad =
     new Date().getFullYear() -
     new Date(colaborator.fecha_nacimiento).getFullYear();
@@ -70,7 +54,6 @@ const checkColaborator = async (nick, primera_vez, res) => {
       ...colaborator,
       primera_vez,
       edad,
-      gustos: etiquetas,
       rol: 3,
     },
   });
