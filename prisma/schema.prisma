@@ -113,7 +113,7 @@ model tab_evento {
 }
 
 model tab_premio {
-  id_premio            Int                    @id @default(autoincrement())
+  id_premio            Int                    @id
   nombre_premio        String                 @db.VarChar
   detalles_premio      String                 @db.VarChar
   coste_premio         Int

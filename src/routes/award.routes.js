@@ -19,9 +19,15 @@ const router = Router();
 
 router.get("/awards", verifyToken, getAwards);
 router.get("/award/:id_premio", verifyToken, getAward);
+router.get("/award/reclaimed", verifyToken, verifyColaborator, reclaimAward);
 
 router.post("/awards", verifyToken, verifyAdmin, createAward);
-router.post("/awards/reclaim", verifyToken, verifyColaborator, reclaimAward);
+router.post(
+  "/awards/reclaim/:id_premio",
+  verifyToken,
+  verifyColaborator,
+  reclaimAward
+);
 
 router.put(
   "/awards/updatePrice/:id_premio",

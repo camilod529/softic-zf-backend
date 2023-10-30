@@ -94,11 +94,13 @@ export const updateAwardState = async (req, res) => {
 
 export const reclaimAward = async (req, res) => {
   try {
-    const id_reclamo = await prisma.tab_premio_reclamado.findMany({
-      select: {
-        id_premio: true,
-      },
-    });
+    const id_reclamo = await prisma.tab_premio_reclamado
+      .findMany({
+        select: {
+          id_premio: true,
+        },
+      })
+      .catch(() => []);
 
     req.body.id_reclamo = id_reclamo.length + 1;
     req.body.id_premio = parseInt(req.params.id_premio);
@@ -108,11 +110,38 @@ export const reclaimAward = async (req, res) => {
 
     if (!result.success) return res.status(403).json(result.error);
 
-    await prisma.tab_premio.create({
-      data: { ...result.data },
+    await prisma.tab_premio_reclamado.create({
+      data: result.data,
     });
 
     res.status(201).json({ message: "Award reclaimed" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: err });
+  }
+};
+
+export const getReclaimedAwards = async (req, res) => {
+  try {
+    const id_premios = await prisma.tab_premio_reclamado.findMany({
+      where: {
+        id_reclamante: req.decoded.documento_colaborador,
+      },
+
+      select: {
+        id_premio: true,
+      },
+    });
+
+    const premios = await prisma.tab_premio.findMany({
+      where: {
+        id_premio: {
+          in: id_premios.map((premio) => premio.id_premio),
+        },
+      },
+    });
+
+    res.status(200).json(premios);
   } catch (err) {
     res.status(400).json({ message: err });
   }
